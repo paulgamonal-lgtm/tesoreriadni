@@ -1,0 +1,72 @@
+/* Asegurar que NO haya scroll interno en ninguna sección */
+/* Solo debe haber scroll a nivel de página completa */
+
+.section,
+.tab-content,
+.table-container,
+.recent-activity,
+.tabs-container,
+.informe-container,
+.profile-container {
+    overflow: visible !important;
+    max-height: none !important;
+    height: auto !important;
+}
+
+/* Asegurar que las tablas se expandan naturalmente */
+.data-table {
+    overflow: visible !important;
+}
+
+/* El contenido principal debe expandirse naturalmente */
+.main-content {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 100vh;
+}
+
+/* El contenedor FLEX principal debe permitir el flujo de página */
+.container {
+    display: flex !important;
+    min-height: 100vh !important;
+    height: auto !important;
+    overflow: visible !important;
+}
+
+/* Asegurar que el body y html permitan scroll natural de página */
+html,
+body {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    height: auto !important;
+    min-height: 100vh !important;
+}
+
+/* Restaurar visualización de la barra de desplazamiento clásica y visible */
+::-webkit-scrollbar {
+    width: 12px !important;
+    /* Más ancha para que sea fácil de ver */
+    height: 12px !important;
+    display: block !important;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1 !important;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888 !important;
+    /* Más oscuro para contraste */
+    border-radius: 6px !important;
+    border: 3px solid #f1f1f1 !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555 !important;
+}
+
+/* Firefox - Barras visibles */
+* {
+    scrollbar-width: auto !important;
+    scrollbar-color: #888 #f1f1f1 !important;
+}

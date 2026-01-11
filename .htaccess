@@ -1,0 +1,28 @@
+# Habilitar reescritura de URLs
+RewriteEngine On
+
+# Permitir acceso a archivos estáticos
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Prevenir listado de directorios
+Options -Indexes
+
+# Establecer index.php como página por defecto
+DirectoryIndex index.php
+
+# Configurar headers de seguridad
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Configurar charset UTF-8
+AddDefaultCharset UTF-8
+
+# Configurar tipos MIME
+AddType application/json .json
+AddType text/css .css
+AddType application/javascript .js
+

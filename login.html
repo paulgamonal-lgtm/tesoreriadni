@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Tesorería DNI</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --text-color: #1e293b;
+            --text-light: #64748b;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 420px;
+            padding: 3rem 2.5rem;
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .login-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .brand-icon {
+            width: 64px;
+            height: 64px;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary-color);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .login-header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            transition: color 0.3s ease;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 2.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            color: var(--text-color);
+            background: var(--bg-color);
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-control:focus+i {
+            color: var(--primary-color);
+        }
+
+        .btn-login {
+            background: var(--primary-color);
+            color: white;
+            width: 100%;
+            padding: 0.875rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn-login:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #ef4444;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-card">
+        <div class="brand-icon">
+            <i class="fas fa-wallet"></i>
+        </div>
+
+        <div class="login-header">
+            <h1>Bienvenido</h1>
+            <p>Ingresa tus credenciales para continuar</p>
+        </div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="errorText">Usuario o contraseña incorrectos</span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Correo Electrónico</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" class="form-control" id="email" placeholder="nombre@ejemplo.com" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Contraseña</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" class="form-control" id="password" placeholder="••••••••" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-login">
+                Iniciar Sesión <i class="fas fa-arrow-right"></i>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            const btn = document.querySelector('.btn-login');
+            const originalBtnContent = btn.innerHTML;
+
+            // Reset error
+            errorDiv.style.display = 'none';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Ingresando...';
+            btn.style.opacity = '0.8';
+            btn.disabled = true;
+
+            try {
+                // Conectando con la API real de autenticación del sistema
+                const response = await fetch('api/auth.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    window.location.href = 'index.php';
+                } else {
+                    throw new Error(data.message || 'Credenciales incorrectas');
+                }
+            } catch (err) {
+                errorDiv.style.display = 'flex';
+                errorText.textContent = err.message || 'Error de conexión';
+
+                // Efecto de vibración
+                const card = document.querySelector('.login-card');
+                card.style.transform = 'translateX(5px)';
+                setTimeout(() => card.style.transform = 'translateX(-5px)', 100);
+                setTimeout(() => card.style.transform = 'translateX(5px)', 200);
+                setTimeout(() => card.style.transform = 'none', 300);
+
+                // Reset button
+                btn.innerHTML = originalBtnContent;
+                btn.style.opacity = '1';
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+
+</html>
