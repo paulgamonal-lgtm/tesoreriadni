@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Resolución de Conflictos</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --primary: #2563eb;
+            --success: #059669;
+            --danger: #dc2626;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+        }
+        body {
+            margin: 0;
+            padding: 2rem 1rem;
+            font-family: Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
+            margin-bottom: 1rem;
+        }
+        h1 {
+            margin-top: 0;
+        }
+        .question h3 {
+            margin: 0 0 0.75rem;
+            font-size: 1.05rem;
+        }
+        .option {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        input[type="text"] {
+            width: 100%;
+            max-width: 420px;
+            padding: 0.65rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 0.65rem 1rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: #334155; color: white; }
+        .result {
+            border-left: 5px solid var(--success);
+            background: #ecfdf5;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 0.75rem;
+            display: none;
+        }
+        .result.error {
+            border-left-color: var(--danger);
+            background: #fef2f2;
+        }
+        .meta {
+            margin: 0.2rem 0;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Quiz: Resolución de Conflictos</h1>
+            <p>Completa las 15 preguntas. Al final verás tu puntaje, tu nota (A/B/C) y podrás descargar un PDF con tus respuestas.</p>
+            <label for="studentName"><strong>Nombre del estudiante:</strong></label>
+            <input id="studentName" type="text" placeholder="Escribe tu nombre completo" required>
+        </div>
+
+        <form id="quizForm"></form>
+
+        <div class="card">
+            <div class="actions">
+                <button type="button" class="btn-primary" id="btnCalificar">Calcular nota final</button>
+                <button type="button" class="btn-secondary" id="btnDescargar" disabled>Descargar PDF</button>
+            </div>
+            <div id="result" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                text: '¿Qué es un conflicto?',
+                options: [
+                    'Un tipo de juego',
+                    'Un lugar donde se juega',
+                    'Una situación en la que hay opiniones diferentes',
+                    'Una situación en la que todos están de acuerdo'
+                ],
+                correct: 2
+            },
+            {
+                text: '¿Por qué pueden ser útiles los conflictos?',
+                options: [
+                    'Ayudan a aprender a comunicarnos mejor',
+                    'Siempre son negativos',
+                    'No tienen importancia',
+                    'Solo causan problemas'
+                ],
+                correct: 0
+            },
+            {
+                text: '¿Cuál es una razón por la que se producen conflictos?',
+                options: [
+                    'Falta de comunicación',
+                    'Demasiada comunicación',
+                    'No hay emociones',
+                    'Siempre hay acuerdo'
+                ],
+                correct: 0
+            },
+            {
+                text: '¿Qué significa resolver conflictos de manera inteligente?',
+                options: [
+                    'Ignorar el problema',
+                    'Gritar y pelear',
+                    'Escuchar a los demás y buscar soluciones',
+                    'Actuar sin pensar'
+                ],
+                correct: 2
+            },
+            {
+                text: '¿Cuál es el primer paso para resolver un conflicto?',
+                options: [
+                    'Calmarse antes de actuar',
+                    'Gritar más fuerte',
+                    'Decidir quién tiene razón',
+                    'Irse del lugar'
+                ],
+                correct: 0
+            },
+            {
+                text: '¿Qué se debe hacer al escuchar a la otra persona?',
+                options: [
+                    'Gritarle',
+                    'Interrumpirla',
+                    'Permitir que explique lo que piensa',
+                    'No prestarle atención'
+                ],
+                correct: 2
+            },
+            {
+                text: '¿Cómo se debe expresar lo que se siente?',
+                options: [
+                    'Con insultos',
+                    'Gritando',
+                    'Con respeto',
+                    'Sin hablar'
+                ],
+                correct: 2
+            },
+            {
+                text: '¿Qué se busca al resolver un conflicto?',
+                options: [
+                    'Solo lo que le conviene a uno',
+                    'Hacer que el otro se sienta mal',
+                    'No buscar soluciones',
+                    'Soluciones que beneficien a todos'
+                ],
+                correct: 3
+            },
+            {
+                text: '¿Qué se debe hacer si no se puede resolver un conflicto?',
+                options: [
+                    'Decidir que no importa',
+                    'Gritar más',
+                    'Ignorar el problema',
+                    'Pedir ayuda cuando es necesario'
+                ],
+                correct: 3
+            },
+            {
+                text: '¿Cuál es una consecuencia de resolver conflictos pacíficamente?',
+                options: [
+                    'Mantener la amistad',
+                    'Aumentar la violencia',
+                    'Romper relaciones',
+                    'No tener amigos'
+                ],
+                correct: 0
+            },
+            {
+                text: '¿Qué emociones pueden causar conflictos?',
+                options: [
+                    'Enojo',
+                    'Sorpresa',
+                    'Felicidad',
+                    'Alegría'
+                ],
+                correct: 0
+            },
+            {
+                text: '¿Qué se debe evitar al resolver un conflicto?',
+                options: [
+                    'Escuchar',
+                    'Buscar soluciones',
+                    'Conversar',
+                    'Insultos o golpes'
+                ],
+                correct: 3
+            },
+            {
+                text: '¿Qué se puede hacer si dos compañeros discuten por un balón?',
+                options: [
+                    'No jugar más',
+                    'Ignorarse',
+                    'Pelear por él',
+                    'Decidir turnarse para usarlo'
+                ],
+                correct: 3
+            },
+            {
+                text: '¿Qué se fortalece al aprender a resolver conflictos?',
+                options: [
+                    'La convivencia democrática',
+                    'La indiferencia',
+                    'La falta de comunicación',
+                    'La soledad'
+                ],
+                correct: 0
+            },
+            {
+                text: '¿Qué se debe hacer después de calmarse?',
+                options: [
+                    'Decidir que no importa',
+                    'Irse',
+                    'Gritar más',
+                    'Escuchar a la otra persona'
+                ],
+                correct: 3
+            }
+        ];
+
+        const form = document.getElementById('quizForm');
+        const resultBox = document.getElementById('result');
+        const btnCalificar = document.getElementById('btnCalificar');
+        const btnDescargar = document.getElementById('btnDescargar');
+        let latestResult = null;
+
+        function renderQuestions() {
+            questions.forEach((q, qi) => {
+                const card = document.createElement('div');
+                card.className = 'card question';
+
+                const title = document.createElement('h3');
+                title.textContent = `${qi + 1}. ${q.text}`;
+                card.appendChild(title);
+
+                q.options.forEach((opt, oi) => {
+                    const label = document.createElement('label');
+                    label.className = 'option';
+
+                    const radio = document.createElement('input');
+                    radio.type = 'radio';
+                    radio.name = `q${qi}`;
+                    radio.value = oi;
+
+                    label.appendChild(radio);
+                    label.append(` ${opt}`);
+                    card.appendChild(label);
+                });
+
+                form.appendChild(card);
+            });
+        }
+
+        function getLetterGrade(score) {
+            if (score >= 13) return 'A';
+            if (score >= 8) return 'B';
+            return 'C';
+        }
+
+        function evaluateQuiz() {
+            const studentName = document.getElementById('studentName').value.trim();
+            if (!studentName) {
+                resultBox.className = 'result error';
+                resultBox.style.display = 'block';
+                resultBox.textContent = 'Por favor, escribe el nombre del estudiante antes de calificar.';
+                btnDescargar.disabled = true;
+                return null;
+            }
+
+            const answers = [];
+            let score = 0;
+
+            for (let i = 0; i < questions.length; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if (!selected) {
+                    resultBox.className = 'result error';
+                    resultBox.style.display = 'block';
+                    resultBox.textContent = `Falta responder la pregunta ${i + 1}.`;
+                    btnDescargar.disabled = true;
+                    return null;
+                }
+
+                const selectedIndex = Number(selected.value);
+                const isCorrect = selectedIndex === questions[i].correct;
+                if (isCorrect) score++;
+
+                answers.push({
+                    question: questions[i].text,
+                    selected: questions[i].options[selectedIndex],
+                    correct: questions[i].options[questions[i].correct],
+                    isCorrect
+                });
+            }
+
+            const grade = getLetterGrade(score);
+            latestResult = { studentName, score, grade, answers };
+
+            resultBox.className = 'result';
+            resultBox.style.display = 'block';
+            resultBox.innerHTML = `
+                <p class="meta"><strong>Estudiante:</strong> ${studentName}</p>
+                <p class="meta"><strong>Puntaje:</strong> ${score} / ${questions.length}</p>
+                <p class="meta"><strong>Nota final:</strong> ${grade}</p>
+                <p class="meta">Escala: 0-7 = C, 8-12 = B, 13-15 = A.</p>
+            `;
+
+            btnDescargar.disabled = false;
+            return latestResult;
+        }
+
+        function downloadPdf() {
+            if (!latestResult) return;
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            let y = 15;
+
+            doc.setFontSize(14);
+            doc.text('Resultado de Quiz: Resolución de Conflictos', 10, y);
+            y += 8;
+
+            doc.setFontSize(11);
+            doc.text(`Nombre: ${latestResult.studentName}`, 10, y);
+            y += 6;
+            doc.text(`Puntaje: ${latestResult.score} / ${questions.length}`, 10, y);
+            y += 6;
+            doc.text(`Nota final: ${latestResult.grade}`, 10, y);
+            y += 10;
+
+            latestResult.answers.forEach((answer, index) => {
+                const lines = doc.splitTextToSize(
+                    `${index + 1}. ${answer.question}\nRespuesta: ${answer.selected}\nCorrecta: ${answer.correct}\n${answer.isCorrect ? 'Estado: Correcta' : 'Estado: Incorrecta'}`,
+                    180
+                );
+
+                if (y + lines.length * 5 > 280) {
+                    doc.addPage();
+                    y = 15;
+                }
+
+                doc.text(lines, 10, y);
+                y += (lines.length * 5) + 3;
+            });
+
+            const safeName = latestResult.studentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            doc.save(`quiz_conflictos_${safeName}.pdf`);
+        }
+
+        renderQuestions();
+        btnCalificar.addEventListener('click', evaluateQuiz);
+        btnDescargar.addEventListener('click', downloadPdf);
+    </script>
+</body>
+</html>
